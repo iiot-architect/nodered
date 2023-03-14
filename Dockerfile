@@ -1,5 +1,5 @@
 FROM node:lts-alpine3.17
-WORKDIR /opt/node
+WORKDIR /root/.node-red
 USER root
 RUN npm install -g --unsafe-perm node-red
 CMD node-red
