@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-red
+spec:
+  selector:
+    matchLabels:
+      run: node-red
+  template:
+    metadata:
+      labels:
+        run: node-red
+    spec:
+      containers:
+      - name: node-red
+        image: nodered/node-red:lts-alpine3.17
+        ports:
+        - containerPort: 1880
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-red
+spec:
+  selector:
+    app: node-red
+  ports:
+  - protocol: TCP
+    port: 1880
+    targetPort: 1880
+  type: LoadBalancer
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: node-red
+spec:
+  scaleTargetRef: 
+    apiVersion: apps/v1
+    kind: Deployment
+    name: node-red
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
