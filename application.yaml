@@ -5,15 +5,17 @@ metadata:
 spec:
   selector:
     matchLabels:
-      run: node-red
+      app: node-red
+  replicas: 1
   template:
     metadata:
       labels:
-        run: node-red
+        app: node-red
     spec:
       containers:
       - name: node-red
-        image: nodered/node-red:lts-alpine3.17
+        image: local-node-red:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 1880
         resources:
@@ -52,4 +54,4 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 50
+        averageUtilization: 30
